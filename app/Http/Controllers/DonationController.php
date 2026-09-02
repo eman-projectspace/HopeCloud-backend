@@ -10,14 +10,18 @@ class DonationController extends Controller
     // Create a donation
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category' => 'required|string|max:255',
-            'condition' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
-        ]);
+       $validated = $request->validate([
+    'title' => 'required|string|max:255',
+    'description' => 'nullable|string',
+    'category' => 'required|string|max:255',
+    'condition' => 'nullable|string|max:255',
+    'location' => 'nullable|string|max:255',
+    'image' => 'nullable|string|max:255',
+
+    'quantity' => 'required|integer|min:1',
+    'preferred_date' => 'nullable|date',
+    'notes' => 'nullable|string',
+]);
 
         $donation = Donation::create([
             'user_id' => $request->user()->id,
