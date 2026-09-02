@@ -16,13 +16,15 @@ class DonationController extends Controller
     'category' => 'required|string|max:255',
     'condition' => 'nullable|string|max:255',
     'location' => 'nullable|string|max:255',
-    'image' => 'nullable|string|max:255',
+    'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
 
     'quantity' => 'required|integer|min:1',
     'preferred_date' => 'nullable|date',
     'notes' => 'nullable|string',
 ]);
-
+if ($request->hasFile('image')) {
+    $validated['image'] = $request->file('image')->store('donations', 'public');
+}
         $donation = Donation::create([
             'user_id' => $request->user()->id,
             ...$validated,
