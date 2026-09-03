@@ -49,42 +49,54 @@ if ($request->hasFile('image')) {
     }
 
     // Get one donation
-    public function show(Donation $donation)
-    {
-        return response()->json([
-            'donation' => $donation->load('user'),
-        ]);
+ public function show(Request $request, Donation $donation)
+{
+    if ($donation->user_id !== $request->user()->id) {
+        abort(403, 'Unauthorized access to this donation.');
     }
+
+    return response()->json([
+        'donation' => $donation,
+    ]);
+}
 
     // Update donation
-    public function update(Request $request, Donation $donation)
-    {
-        $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
-            'category' => 'sometimes|string|max:255',
-            'condition' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
-        ]);
-
-        $donation->update($validated);
-
-        return response()->json([
-            'message' => 'Donation updated successfully',
-            'donation' => $donation,
-        ]);
+   public function update(Request $request, Donation $donation)
+{
+    if ($donation->user_id !== $request->user()->id) {
+        abort(403, 'Unauthorized access to this donation.');
     }
+
+    $validated = $request->validate([
+        'title' => 'sometimes|string|max:255',
+        'description' => 'nullable|string',
+        'category' => 'sometimes|string|max:255',
+        'condition' => 'nullable|string|max:255',
+        'location' => 'nullable|string|max:255',
+        'image' => 'nullable|string|max:255',
+    ]);
+
+    $donation->update($validated);
+
+    return response()->json([
+        'message' => 'Donation updated successfully',
+        'donation' => $donation,
+    ]);
+}
 
     // Delete donation
-    public function destroy(Donation $donation)
-    {
-        $donation->delete();
-
-        return response()->json([
-            'message' => 'Donation deleted successfully',
-        ]);
+    public function destroy(Request $request, Donation $donation)
+{
+    if ($donation->user_id !== $request->user()->id) {
+        abort(403, 'Unauthorized access to this donation.');
     }
+
+    $donation->delete();
+
+    return response()->json([
+        'message' => 'Donation deleted successfully',
+    ]);
+}
     // Get logged-in user's impact
 public function myImpact(Request $request)
 {
