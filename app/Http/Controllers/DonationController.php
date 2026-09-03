@@ -37,9 +37,11 @@ if ($request->hasFile('image')) {
     }
 
     // Get all donations
-    public function index()
+    public function index(Request $request)
     {
-        $donations = Donation::with('user')->latest()->get();
+        $donations = Donation::where('user_id', $request->user()->id)
+            ->latest()
+            ->get();
 
         return response()->json([
             'donations' => $donations,
