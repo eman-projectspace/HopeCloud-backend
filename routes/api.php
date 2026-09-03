@@ -19,7 +19,7 @@ Route::post('/logout', function (Request $request) {
         'message' => 'Logged out successfully'
     ]);
 })->middleware('auth:sanctum');
-
+Route::middleware('auth:sanctum')->get('/my-impact', [DonationController::class, 'myImpact']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/donations', [DonationController::class, 'store']);

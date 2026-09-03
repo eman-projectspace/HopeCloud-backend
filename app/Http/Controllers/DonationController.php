@@ -83,4 +83,37 @@ if ($request->hasFile('image')) {
             'message' => 'Donation deleted successfully',
         ]);
     }
+    // Get logged-in user's impact
+public function myImpact(Request $request)
+{
+    $user = $request->user();
+
+    $donations = Donation::where('user_id', $user->id)
+        ->latest()
+        ->get();
+
+    $totalDonations = $donations->count();
+
+    $totalItems = $donations->sum('quantity');
+
+    $categories = $donations->groupBy('category');
+
+    $impactAreas = $categories->map(function ($items, $category) {
+        return [
+            'category' => $category,
+            'items' => $items->sum('quantity'),
+        ];
+    })->values();
+
+    return response()->json([
+        'impact' => [
+            'total_donations' => $totalDonations,
+            'total_items' => $totalItems,
+            'impact_score' => min($totalItems * 10, 100),
+            'impact_growth' => 0,
+            'impact_areas' => $impactAreas,
+            'recent_donations' => $donations->take(5),
+        ],
+    ]);
+}
 }
