@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\AdminController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -30,7 +31,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::put('/donations/{donation}', [DonationController::class, 'update']);
     Route::post('/donations/{donation}', [DonationController::class, 'update']);
-
     Route::delete('/donations/{donation}', [DonationController::class, 'destroy']);
 
 });
+
+Route::middleware('auth:sanctum')->get(
+    '/admin/dashboard',
+    [AdminController::class, 'dashboard']
+);
+
+Route::middleware('auth:sanctum')->put(
+    '/admin/donations/{donation}/status',
+    [AdminController::class, 'updateDonationStatus']
+);

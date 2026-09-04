@@ -24,6 +24,7 @@ class Donation extends Model
         'quantity',
         'preferred_date',
         'notes',
+        'status',
     ];
 
     protected function casts(): array
